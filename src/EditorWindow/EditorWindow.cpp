@@ -16,6 +16,13 @@ void EditorWindow::Init()
 {
 	controlManager = new ControlManager();
 
+	ChCpp::File<char> file;
+	file.FileOpen("ControlManagerFile.setting");
+	auto&& jsonObject = ChPtr::SharedSafeCast<ChCpp::JsonObject>(ChCpp::JsonBaseType::GetParameter(file.FileReadText()));
+	controlManager->Deserialize(jsonObject);
+	if (jsonObject == nullptr)controlManager->InitializeShortcutKeyMaps();
+	file.FileClose();
+
 	SetInitFlg(true);
 }
 
@@ -55,7 +62,7 @@ void EditorWindow::InitWindows(HINSTANCE _hInstance, int _nShowCmd)
 
 	creater.Create(&windows, L"ChFileEditorFor3D", windClass.GetWindClassName(), _nShowCmd);
 
-	menu = LoadMenu(_hInstance, TO_STRING(MENU_FILE));
+	menu = LoadMenu(_hInstance, TO_STRING(MENU));
 	SetMenu(windows.GethWnd(), menu);
 
 	InitWindowsMenu();
@@ -153,8 +160,19 @@ int EditorWindow::Update()
 void EditorWindow::Release()
 {
 	if (!IsInit())return;
-	
+
 	ReleaseWindows();
+
+	ChCpp::File<char> file;
+	file.FileOpen("ControlManagerFile.setting");
+	file.FileWriteText(controlManager->Serialize()->GetRawData());
+	file.FileClose();
+
+	if (ChPtr::NotNullCheck(controlManager))
+	{
+		delete controlManager;
+		controlManager = nullptr;
+	}
 
 	SetInitFlg(false);
 }
@@ -170,12 +188,6 @@ void EditorWindow::ReleaseWindows()
 	windows.Release();
 
 	windClass.Release();
-
-	if (ChPtr::NotNullCheck(controlManager))
-	{
-		delete controlManager;
-		controlManager = nullptr;
-	}
 
 
 #endif

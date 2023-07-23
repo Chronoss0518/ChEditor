@@ -52,7 +52,7 @@ private:
 
 	ControlManager* controlManager = nullptr;
 
-#ifdef WIN32 || WIN64
+#ifdef WIN32
 
 	ChINTPOINT displaySize;
 
@@ -63,6 +63,8 @@ private:
 	ChD3D11::DirectX3D11 d3d11;
 
 	bool checkTestFlg = false;
+
+#elif WIN64
 
 #else
 
