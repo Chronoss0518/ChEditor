@@ -4,12 +4,14 @@ class ControlManager
 {
 public:
 
-	enum class ControlType
+	enum class ShortcutKeyType: unsigned short
 	{
-		CHANGE_PROJECT_MATRIX_TYPE
+		ChangeTheProjectionMatrixType
 	};
 
 public:
+
+	void InitializeShortcutKeyMaps();
 
 	ChPtr::Shared<ChCpp::JsonObject> Serialize();
 
@@ -43,6 +45,6 @@ private:
 
 	bool useProjectionMatrixOrthographicFlg = false;
 
-	std::map<ControlType, std::vector<unsigned long>>shortcutKeyMap;
+	std::map<ShortcutKeyType, std::vector<unsigned long>>shortcutKeyMap;
 
 };
