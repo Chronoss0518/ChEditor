@@ -38,6 +38,10 @@ private:
 
 	void InitWindowsMenu();
 
+	int UpdateWindows();
+
+	void ReleaseWindows();
+
 	ChLMat viewMatrix;
 
 	//透視投影射影行列//
@@ -53,9 +57,12 @@ private:
 	ChINTPOINT displaySize;
 
 	ChWin::WindObject windows;
+	HMENU menu = nullptr;
 	ChWin::WindClassObject windClass;
 
 	ChD3D11::DirectX3D11 d3d11;
+
+	bool checkTestFlg = false;
 
 #else
 

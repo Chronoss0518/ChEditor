@@ -21,7 +21,7 @@ void EditorWindow::Init()
 
 void EditorWindow::InitWindows(HINSTANCE _hInstance, int _nShowCmd)
 {
-
+#ifdef _WIN32
 	windClass.Init();
 
 	{
@@ -55,7 +55,7 @@ void EditorWindow::InitWindows(HINSTANCE _hInstance, int _nShowCmd)
 
 	creater.Create(&windows, L"ChFileEditorFor3D", windClass.GetWindClassName(), _nShowCmd);
 
-	auto menu = LoadMenu(_hInstance, TO_STRING(MENU_FILE));
+	menu = LoadMenu(_hInstance, TO_STRING(MENU_FILE));
 	SetMenu(windows.GethWnd(), menu);
 
 	InitWindowsMenu();
@@ -69,17 +69,23 @@ void EditorWindow::InitWindows(HINSTANCE _hInstance, int _nShowCmd)
 	tmpMat.CreateProjectionMat(TO_FLOATING(displaySize.w), TO_FLOATING(displaySize.h), 0.01f, 10000.0f);
 
 	projectionMatrixOrthographic = tmpMat;
+
+#endif
 }
 
 void EditorWindow::InitDirectX()
 {
+#ifdef _WIN32
 	d3d11.Init(windows.GethWnd(), false, displaySize.w, displaySize.h);
 
 	ChD3D11::Shader11().Init(d3d11, CHAST_FLOAT(displaySize.w), CHAST_FLOAT(displaySize.h));
+#endif
 }
 
 void EditorWindow::InitWindowsMenu()
 {
+
+#ifdef _WIN32
 
 	windows.SetWindProcedure(APP_EXIT, [&](HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam)->LRESULT {
 		ChWin::MsgBox msgBox;
@@ -100,10 +106,20 @@ void EditorWindow::InitWindowsMenu()
 	return DefWindowProc(_hWnd, _msg, _wParam, _lParam);
 		});
 
+	windows.SetWindProcedure(WINDOW_OPEN_PROPATY, [&](HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam)->LRESULT {
+
+		checkTestFlg = !checkTestFlg;
+		CheckMenuItem(menu, WINDOW_OPEN_PROPATY, checkTestFlg ? MF_CHECKED : MF_UNCHECKED);
+
+		return 0;
+		});
+#endif
 }
 
-int EditorWindow::Update()
+int EditorWindow::UpdateWindows()
 {
+#ifdef _WIN32
+
 
 	while (windows.Update())
 	{
@@ -116,20 +132,52 @@ int EditorWindow::Update()
 		if (controlManager->IsUseProjectionMatrixOrthographicFlg())projectionMat = projectionMatrixOrthographic;
 
 	}
-	
+
 	return (int)windows.GetReturnMassage();
+#endif
+}
+
+int EditorWindow::Update()
+{
+	int res = 0;
+
+#ifdef _WIN32
+
+	res = UpdateWindows();
+
+#endif
+
+	return res;
 }
 
 void EditorWindow::Release()
 {
 	if (!IsInit())return;
+	
+	ReleaseWindows();
+
+	SetInitFlg(false);
+}
+
+void EditorWindow::ReleaseWindows()
+{
+#ifdef _WIN32
+
+	ChD3D11::Shader11().Release();
+
+	d3d11.Release();
+
+	windows.Release();
 
 	windClass.Release();
+
 	if (ChPtr::NotNullCheck(controlManager))
 	{
 		delete controlManager;
 		controlManager = nullptr;
 	}
 
-	SetInitFlg(false);
+
+#endif
+
 }
