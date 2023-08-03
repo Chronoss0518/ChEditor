@@ -1,16 +1,11 @@
 ﻿#include"BaseIncluder.h"
 #include"EditorWindow/EditorWindow.h"
 
-int APIENTRY WinMain(
-	HINSTANCE hInstance,
-	HINSTANCE hPrevInstance,
-	LPSTR     lpCmdLine,
-	int       nShowCmd
-)
+int main()
 {
 	EditorWindow window;
 
-	window.Init(hInstance, nShowCmd);
+	window.Init();
 
 	int lresult = window.Update();
 

@@ -1,10 +1,12 @@
 ﻿#pragma once
 
-#include<Windows.h>
 #include<ChBaseLibrary.h>
+
+#ifdef WIN32
+#include<Windows.h>
 #include<ChWindowsLibrary.h>
 #include<ChDirect3D11Library.h>
-
+#endif
 
 #ifndef TO_STRING
 

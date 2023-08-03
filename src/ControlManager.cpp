@@ -1,10 +1,11 @@
 ﻿#include"BaseIncluder.h"
 #include"ControlManager.h"
 
+constexpr char const* controlTypeStr[] = { "Change The Projection Matrix Type","None" };
 
 void ControlManager::InitializeShortcutKeyMaps()
 {
-	shortcutKeyMap[ShortcutKeyType::ChangeTheProjectionMatrixType] = { VK_SHIFT,'V' };
+	shortcutKeyMap[ControlType::ChangeTheProjectionMatrixType] = { VK_SHIFT,'V' };
 }
 
 ChPtr::Shared<ChCpp::JsonObject> ControlManager::Serialize()
@@ -16,12 +17,12 @@ ChPtr::Shared<ChCpp::JsonObject> ControlManager::Serialize()
 	res->SetObject("Use Orthographic From Projection Matrix", ChCpp::JsonBoolean::CreateObject(useProjectionMatrixOrthographicFlg));
 
 	auto&& shortcutKeyMapObject = ChPtr::Make_S<ChCpp::JsonObject>();
-	
+
 	for (auto&& shortcutKeyValue : shortcutKeyMap)
 	{
 		auto&& shortcutKeyArray = ChCpp::JsonArray::CreateObject(shortcutKeyValue.second);
 
-		shortcutKeyMapObject->SetObject(std::to_string(ChStd::EnumCast(shortcutKeyValue.first)), shortcutKeyArray);
+		shortcutKeyMapObject->SetObject(ControlTypeToString(shortcutKeyValue.first), shortcutKeyArray);
 	}
 
 	res->SetObject("Shortcut Key Mapping", shortcutKeyMapObject);
@@ -62,11 +63,53 @@ void ControlManager::Deserialize(const ChPtr::Shared<ChCpp::JsonObject>& _json)
 
 			if (keyList.empty())continue;
 
-			auto&& shortcutKeyType = static_cast<ShortcutKeyType>(ChStr::GetIntegialFromText<unsigned short>(parameterName));
+			auto&& shortcutKeyType = StringToControlType(parameterName);
+
+			if (shortcutKeyType == ControlType::None)continue;
 
 			shortcutKeyMap[shortcutKeyType] = keyList;
 		}
+	}
+}
 
+std::vector<ControlManager::ControlType> ControlManager::GetShortcut(ChPtr::Shared<ChSystem::BaseSystem> _windSystem)
+{
+	unsigned long pushKey = 0;
+
+	std::vector<ControlManager::ControlType> res;
+
+	bool isPush = true;
+
+	for (auto&& controlType : shortcutKeyMap)
+	{
+		isPush = true;
+
+		for (auto&& shortcutKey : controlType.second)
+		{
+			if (_windSystem->IsPushKey(shortcutKey))continue;
+			isPush = false;
+		}
+
+		if (!isPush)continue;
+		res.push_back(controlType.first);
 	}
 
+	return res;
+}
+
+
+
+std::string ControlManager::ControlTypeToString(ControlManager::ControlType _type)
+{
+	return controlTypeStr[ChStd::EnumCast(_type)];
+}
+
+ControlManager::ControlType ControlManager::StringToControlType(const std::string& _str)
+{
+	for (typename std::underlying_type<ControlType>::type i = 0; i < 1; i++)
+	{
+		if (_str == controlTypeStr[i])return static_cast<ControlType>(i);
+	}
+
+	return ControlType::None;
 }

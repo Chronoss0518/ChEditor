@@ -4,9 +4,9 @@ class ControlManager
 {
 public:
 
-	enum class ShortcutKeyType: unsigned short
+	enum class ControlType : unsigned short
 	{
-		ChangeTheProjectionMatrixType
+		ChangeTheProjectionMatrixType,None
 	};
 
 public:
@@ -39,12 +39,18 @@ public:
 		return useProjectionMatrixOrthographicFlg; 
 	}
 
+	std::vector<ControlManager::ControlType> GetShortcut(ChPtr::Shared<ChSystem::BaseSystem> _windSystem);
+
 private:
 
+	std::string ControlTypeToString(ControlManager::ControlType _type);
+
+	ControlManager::ControlType StringToControlType(const std::string& _str);
+	
 	float cameraLookAngleRadian = 60.0f;
 
 	bool useProjectionMatrixOrthographicFlg = false;
 
-	std::map<ShortcutKeyType, std::vector<unsigned long>>shortcutKeyMap;
+	std::map<ControlType, std::vector<unsigned long>>shortcutKeyMap;
 
 };

@@ -8,37 +8,63 @@ public://子ウィンドウ//
 
 
 
+
 public:
 
-	void Init(HINSTANCE _hInstance, int _nShowCmd)
+	void Init()
 	{
-		Init();
+		InitBase();
 
 #ifdef _WINDOWS
 
-		InitWindows(_hInstance, _nShowCmd);
+		InitWindows();
 
 		InitDirectX();
 #else
 
 #endif
+		SetInitFlg(true);
 	}
 
-	void Init();
 
-	int Update();
+	int Update()
+	{
+		int res = 0;
+
+
+		while (wind->IsUpdate())
+		{
+
+#ifdef _WIN32
+
+			res = UpdateWindows();
+
+#endif
+
+
+		}
+
+		return res;
+	}
 
 	void Release();
 
 private:
 
-	void InitWindows(HINSTANCE _hInstance, int _nShowCmd);
+	void InitBase();
+
+private:
+
+	void InitWindows();
 
 	void InitDirectX();
 
 	void InitWindowsMenu();
 
 	int UpdateWindows();
+
+	void DrawWindows();
+
 
 	void ReleaseWindows();
 
@@ -52,21 +78,35 @@ private:
 
 	ControlManager* controlManager = nullptr;
 
+	ChPtr::Shared<ChSystem::BaseSystem> wind = nullptr;
+
+	std::vector<ChPtr::Shared<ChCpp::ModelObject>>modelList;
+
+	std::vector<ChPtr::Shared<
+#ifdef WIN32
+		ChD3D11::TextureBase11
+#endif
+		>>textureList;
+
 #ifdef WIN32
 
 	ChINTPOINT displaySize;
 
-	ChWin::WindObject windows;
 	HMENU menu = nullptr;
 	ChWin::WindClassObject windClass;
 
 	ChD3D11::DirectX3D11 d3d11;
 
+	ChD3D11::Shader::BaseDrawMesh11 drawMeshShader;
+
+	ChD3D11::Shader::BaseDrawSprite11 drawSpriteShader;
+
+	ChD3D11::Shader::BaseDrawPolygonBoard11 drawPolygonShader;
+
 	bool checkTestFlg = false;
 
-#elif WIN64
+#else 
 
-#else
 
 #endif
 
