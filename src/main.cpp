@@ -1,15 +1,20 @@
 ﻿#include"BaseIncluder.h"
 #include"EditorWindow/EditorWindow.h"
+#include"Windows/EditorWindowFromWindows/EditorWindowFromWindows.h"
 
 int main()
 {
-	EditorWindow window;
+	ChPtr::Unique<EditorWindow> window = nullptr;
 
-	window.Init();
+#ifdef _WINDOWS
+	window = ChPtr::Make_U<EditorWindowFromWindows>();
+#endif
 
-	int lresult = window.Update();
+	window->Init();
 
-	window.Release();
+	int lresult = window->Update();
+
+	window->Release();
 
 	return lresult;
 }

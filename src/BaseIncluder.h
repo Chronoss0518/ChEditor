@@ -2,7 +2,7 @@
 
 #include<ChBaseLibrary.h>
 
-#ifdef WIN32
+#ifdef _WINDOWS
 #include<Windows.h>
 #include<ChWindowsLibrary.h>
 #include<ChDirect3D11Library.h>
@@ -24,6 +24,22 @@
 
 #ifndef TO_FLOATING
 #define TO_FLOATING(define) static_cast<float>(define)
+#endif
+
+#ifndef GAME_WINDOW_WIDTH
+#define GAME_WINDOW_WIDTH 1280
+#endif
+
+#ifndef GAME_WINDOW_HEIGHT
+#define GAME_WINDOW_HEIGHT 720
+#endif
+
+#ifndef SCREEN_TO_PROJECTION_X
+#define SCREEN_TO_PROJECTION_X(value) TO_FLOATING(value / GAME_WINDOW_WIDTH) * 2.0f - 1.0f
+#endif
+
+#ifndef SCREEN_TO_PROJECTION_Y
+#define SCREEN_TO_PROJECTION_Y(value) 1.0f - TO_FLOATING(value / GAME_WINDOW_WIDTH) * 2.0f
 #endif
 
 template<typename BaseType>
