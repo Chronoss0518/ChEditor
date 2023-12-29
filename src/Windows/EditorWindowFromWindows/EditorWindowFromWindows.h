@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include"../../EditorWindow/EditorWindow.h"
 
@@ -44,4 +44,5 @@ private:
 
 	ChD3D11::Shader::BaseDrawPolygonBoard11 drawPolygonShader;
 
+	ChD3D11::Shader::BaseDrawPolygonBoard11 drawGridShader;
 };

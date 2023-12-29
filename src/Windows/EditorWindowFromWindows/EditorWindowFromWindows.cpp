@@ -1,4 +1,4 @@
-#include"../../BaseIncluder.h"
+ï»¿#include"../../BaseIncluder.h"
 #include"EditorWindowFromWindows.h"
 #include"../../../resource.h"
 #include"../../ControlManager.h"
@@ -104,7 +104,7 @@ void EditorWindowFromWindows::InitWindowsMenu()
 		msgBox.ClearDisplayButtonType();
 		msgBox.AddDisplayButtonType(ChWin::MsgBox::DisplayButtonType::YesNo);
 
-		if (msgBox.Display(_hWnd, L"I—¹Šm”F", L"ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ğI—¹‚µ‚Ü‚·‚©") == ChWin::MsgBox::PushButtonType::Yes)
+		if (msgBox.Display(_hWnd, L"çµ‚äº†ç¢ºèª", L"ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã‚’çµ‚äº†ã—ã¾ã™ã‹") == ChWin::MsgBox::PushButtonType::Yes)
 		{
 			PostQuitMessage(0);
 		}
@@ -168,6 +168,11 @@ void EditorWindowFromWindows::DrawFunction()
 	ChD3D11::Shader11().DrawStart();
 
 	drawMeshShader.DrawStart(d3d11.GetDC());
+
+
+
+
+
 
 	drawMeshShader.DrawEnd();
 
